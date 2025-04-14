@@ -7,12 +7,14 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { suggestRoutes, RouteSuggestion } from '@/ai/flows/suggest-routes';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import {
+  Clock,
   Compass,
   Heart,
-  Hourglass,
   Home as HomeIcon,
   Microscope,
   Pill as PharmacyIcon,
+  Star,
+  Wallet,
 } from 'lucide-react';
 
 export default function Home() {
@@ -77,17 +79,14 @@ export default function Home() {
             <RouteCard
               title="Cost Optimized"
               route={routeSuggestions.costOptimized}
-              icon={<Compass className="mr-2 h-4 w-4" />}
             />
             <RouteCard
               title="Speed Optimized"
               route={routeSuggestions.speedOptimized}
-              icon={<Hourglass className="mr-2 h-4 w-4" />}
             />
             <RouteCard
               title="Rating Optimized"
               route={routeSuggestions.ratingOptimized}
-              icon={<Heart className="mr-2 h-4 w-4" />}
             />
           </div>
         </>
@@ -99,16 +98,40 @@ export default function Home() {
 function RouteCard({
   title,
   route,
-  icon,
 }: {
   title: string;
   route: RouteSuggestion;
-  icon: React.ReactNode;
 }) {
+  let icon;
+  let iconColorClass;
+  let cardBorderClass = '';
+
+  switch (title) {
+    case 'Cost Optimized':
+      icon = <Wallet className="mr-2 h-4 w-4" />;
+      iconColorClass = 'text-green-600';
+      cardBorderClass = 'border-green-200';
+      break;
+    case 'Speed Optimized':
+      icon = <Clock className="mr-2 h-4 w-4" />;
+      iconColorClass = 'text-blue-600';
+      cardBorderClass = 'border-blue-200';
+      break;
+    case 'Rating Optimized':
+      icon = <Star className="mr-2 h-4 w-4" />;
+      iconColorClass = 'text-yellow-500';
+      cardBorderClass = 'border-yellow-200';
+      break;
+    default:
+      icon = <Compass className="mr-2 h-4 w-4" />;
+      iconColorClass = '';
+      break;
+  }
+
   return (
-    <Card>
+    <Card className={cardBorderClass}>
       <CardHeader className="flex flex-row items-center pb-2 space-y-0">
-        {icon}
+        <div className={iconColorClass}>{icon}</div>
         <CardTitle className="text-sm font-medium">{title}</CardTitle>
       </CardHeader>
       <CardContent>
