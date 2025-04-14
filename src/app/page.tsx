@@ -53,6 +53,7 @@ export default function Home() {
       const mcqsResult = await generateMCQs({symptoms});
       setMcqs(mcqsResult.mcqs);
       setRouteSuggestions(null); // Clear previous route suggestions
+      setProbableCause(null); // Clear previous probable cause
 
     } catch (e: any) {
       console.error('Error getting route suggestions:', e);
@@ -155,7 +156,7 @@ export default function Home() {
                 opacity: allMcqsAnswered ? 1 : 0.5,
               }}
             >
-              {isLoading ? 'Submitting...' : 'Submit Answers'}
+              {isLoading ? 'Submit Answers' : 'Submit Answers'}
             </Button>
           </CardContent>
         </Card>
