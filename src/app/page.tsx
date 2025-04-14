@@ -1,6 +1,6 @@
 'use client';
 
-import {useState} from 'react';
+import {useState, useEffect} from 'react';
 import {Button} from '@/components/ui/button';
 import {Textarea} from '@/components/ui/textarea';
 import {Card, CardContent, CardDescription, CardHeader, CardTitle} from '@/components/ui/card';
@@ -34,6 +34,16 @@ export default function Home() {
   const [mcqs, setMcqs] = useState<MCQ[] | null>(null);
   const [mcqAnswers, setMcqAnswers] = useState<{[key: string]: string}>({});
   const [probableCause, setProbableCause] = useState<string | null>(null);
+  const [allMcqsAnswered, setAllMcqsAnswered] = useState(false);
+
+  useEffect(() => {
+    if (mcqs) {
+      const answered = mcqs.every(mcq => mcqAnswers[mcq.question]);
+      setAllMcqsAnswered(answered);
+    } else {
+      setAllMcqsAnswered(false);
+    }
+  }, [mcqs, mcqAnswers]);
 
   const handleSuggestion = async () => {
     setIsLoading(true);
@@ -103,7 +113,7 @@ export default function Home() {
             disabled={isLoading}
             style={{backgroundColor: symptoms ? '#1398ea' : ''}}
           >
-            {isLoading ? 'Suggesting...' : 'Get Route Suggestions'}
+            {isLoading ? 'Get Route Suggestions' : 'Get Route Suggestions'}
           </Button>
           {error && (
             <Alert variant="destructive" className="mt-4">
@@ -137,7 +147,14 @@ export default function Home() {
                 </RadioGroup>
               </div>
             ))}
-            <Button onClick={handleSubmitMCQs} disabled={isLoading} style={{backgroundColor: '#1398ea'}}>
+            <Button
+              onClick={handleSubmitMCQs}
+              disabled={isLoading || !allMcqsAnswered}
+              style={{
+                backgroundColor: allMcqsAnswered ? '#1398ea' : '',
+                opacity: allMcqsAnswered ? 1 : 0.5,
+              }}
+            >
               {isLoading ? 'Submitting...' : 'Submit Answers'}
             </Button>
           </CardContent>
@@ -245,4 +262,3 @@ function RouteCard({
     </Card>
   );
 }
-
