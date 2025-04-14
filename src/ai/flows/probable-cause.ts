@@ -21,6 +21,8 @@ export type DetermineProbableCauseInput = z.infer<typeof DetermineProbableCauseI
 const DetermineProbableCauseOutputSchema = z.object({
   probableCause: z.string().describe('The probable cause of the symptoms.'),
   severityScore: z.number().describe('A numerical score indicating the severity of the probable cause (0-100).'),
+  severityZone: z.enum(['green', 'yellow', 'red']).describe('The severity zone based on the severity score.'),
+  predictedDisease: z.string().describe('The predicted disease based on the symptoms and MCQ answers.'),
 });
 export type DetermineProbableCauseOutput = z.infer<typeof DetermineProbableCauseOutputSchema>;
 
@@ -32,7 +34,7 @@ export async function determineProbableCause(
 
 const assessProbableCause = ai.defineTool({
   name: 'assessProbableCause',
-  description: 'Assess the probable cause and provide a severity score based on symptoms and MCQ answers using Med-PaLM.',
+  description: 'Assess the probable cause and provide a severity score (0-100) and zone based on symptoms and MCQ answers using Med-PaLM.',
   inputSchema: z.object({
     symptoms: z.string().describe('The symptoms described by the user.'),
     mcqAnswers: z.record(z.string(), z.string()).describe('A record of multiple-choice question answers.'),
@@ -40,13 +42,27 @@ const assessProbableCause = ai.defineTool({
   outputSchema: z.object({
     probableCause: z.string().describe('The probable cause of the symptoms.'),
     severityScore: z.number().describe('A numerical score indicating the severity of the probable cause (0-100).'),
+    severityZone: z.enum(['green', 'yellow', 'red']).describe('The severity zone based on the severity score.'),
+    predictedDisease: z.string().describe('The predicted disease based on the symptoms and MCQ answers.'),
   }),
 }, async (input) => {
   // Simulate Med-PaLM assessment.  Replace with actual Med-PaLM API call in a real application.
   // This is a placeholder for Med-PaLM's assessment based on symptoms and MCQ answers.
   const cause = `Possible ${input.symptoms} (Based on AI Symptoms)`; // placeholder
   const score = Math.floor(Math.random() * 101); // Severity score (0-100)
-  return {probableCause: cause, severityScore: score};
+
+  let severityZone: 'green' | 'yellow' | 'red';
+  if (score <= 30) {
+    severityZone = 'green';
+  } else if (score <= 70) {
+    severityZone = 'yellow';
+  } else {
+    severityZone = 'red';
+  }
+
+  const predictedDisease = `AI Predicted Disease related to ${input.symptoms}`; // Placeholder
+
+  return {probableCause: cause, severityScore: score, severityZone: severityZone, predictedDisease: predictedDisease};
 });
 
 const determineProbableCauseFlow = ai.defineFlow<
@@ -59,7 +75,7 @@ const determineProbableCauseFlow = ai.defineFlow<
     outputSchema: DetermineProbableCauseOutputSchema,
   },
   async input => {
-    const {probableCause, severityScore} = await assessProbableCause(input);
-    return {probableCause: probableCause, severityScore: severityScore};
+    const {probableCause, severityScore, severityZone, predictedDisease} = await assessProbableCause(input);
+    return {probableCause: probableCause, severityScore: severityScore, severityZone: severityZone, predictedDisease: predictedDisease};
   }
 );

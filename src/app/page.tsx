@@ -17,7 +17,7 @@ import {
   Wallet,
 } from 'lucide-react';
 import {generateMCQs, MCQ} from '@/ai/flows/mcq-symptom';
-import {determineProbableCause} from '@/ai/flows/probable-cause';
+import {determineProbableCause, DetermineProbableCauseOutput} from '@/ai/flows/probable-cause';
 import {RadioGroup, RadioGroupItem} from '@/components/ui/radio-group';
 import {Label} from '@/components/ui/label';
 
@@ -33,8 +33,10 @@ export default function Home() {
 
   const [mcqs, setMcqs] = useState<MCQ[] | null>(null);
   const [mcqAnswers, setMcqAnswers] = useState<{[key: string]: string}>({});
-  const [probableCause, setProbableCause] = useState<string | null>(null);
+  const [probableCause, setProbableCause] = useState<DetermineProbableCauseOutput | null>(null);
   const [severityScore, setSeverityScore] = useState<number | null>(null);
+  const [severityZone, setSeverityZone] = useState<string | null>(null);
+  const [predictedDisease, setPredictedDisease] = useState<string | null>(null);
   const [allMcqsAnswered, setAllMcqsAnswered] = useState(false);
 
   useEffect(() => {
@@ -76,8 +78,11 @@ export default function Home() {
           symptoms: symptoms,
           mcqAnswers: mcqAnswers,
         });
-        setProbableCause(probableCauseResult.probableCause);
+
+        setProbableCause(probableCauseResult);
         setSeverityScore(probableCauseResult.severityScore);
+        setSeverityZone(probableCauseResult.severityZone);
+        setPredictedDisease(probableCauseResult.predictedDisease);
 
         // Get route suggestions
         const suggestions = await suggestRoutes({symptoms});
@@ -171,9 +176,15 @@ export default function Home() {
             <CardTitle>Probable Cause</CardTitle>
           </CardHeader>
           <CardContent>
-            <p>{probableCause}</p>
+            <p>{probableCause.probableCause}</p>
             {severityScore !== null && (
-              <p>Severity Score: {severityScore}</p>
+              <p>Severity Score: {severityScore} / 100</p>
+            )}
+            {severityZone !== null && (
+              <p>Severity Zone: {severityZone}</p>
+            )}
+             {predictedDisease !== null && (
+              <p>Predicted Disease: {predictedDisease}</p>
             )}
           </CardContent>
         </Card>
