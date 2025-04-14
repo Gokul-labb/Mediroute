@@ -296,8 +296,8 @@ function RouteCard({
   switch (title) {
     case 'Cost Optimized':
       icon = <Wallet className="mr-2 h-4 w-4"/>;
-      iconColorClass = 'text-white';
-      cardClass = 'bg-[#16A34A] text-white'; // Apply background color and text color
+      iconColorClass = 'text-green-600';
+      cardBorderClass = 'border-green-200';
       break;
     case 'Speed Optimized':
       icon = <Clock className="mr-2 h-4 w-4"/>;
