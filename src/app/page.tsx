@@ -1,12 +1,19 @@
 'use client';
 
-import {useState} from 'react';
-import {Button} from '@/components/ui/button';
-import {Textarea} from '@/components/ui/textarea';
-import {Card, CardContent, CardDescription, CardHeader, CardTitle} from '@/components/ui/card';
-import {suggestRoutes, RouteSuggestion} from '@/ai/flows/suggest-routes';
-import {Alert, AlertDescription, AlertTitle} from '@/components/ui/alert';
-import {Compass, Heart, Hourglass, Home as HomeIcon, Microscope, PharmacyMedical as PharmacyIcon} from 'lucide-react';
+import { useState } from 'react';
+import { Button } from '@/components/ui/button';
+import { Textarea } from '@/components/ui/textarea';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { suggestRoutes, RouteSuggestion } from '@/ai/flows/suggest-routes';
+import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
+import {
+  Compass,
+  Heart,
+  Hourglass,
+  Home as HomeIcon,
+  Microscope,
+  Pharmacy as PharmacyIcon,
+} from 'lucide-react';
 
 export default function Home() {
   const [symptoms, setSymptoms] = useState('');
@@ -22,7 +29,7 @@ export default function Home() {
     setIsLoading(true);
     setError(null);
     try {
-      const suggestions = await suggestRoutes({symptoms});
+      const suggestions = await suggestRoutes({ symptoms });
       setRouteSuggestions(suggestions);
     } catch (e: any) {
       console.error('Error getting route suggestions:', e);
@@ -66,17 +73,17 @@ export default function Home() {
             <RouteCard
               title="Cost Optimized"
               route={routeSuggestions.costOptimized}
-              icon={<Compass className="mr-2 h-4 w-4"/>}
+              icon={<Compass className="mr-2 h-4 w-4" />}
             />
             <RouteCard
               title="Speed Optimized"
               route={routeSuggestions.speedOptimized}
-              icon={<Hourglass className="mr-2 h-4 w-4"/>}
+              icon={<Hourglass className="mr-2 h-4 w-4" />}
             />
             <RouteCard
               title="Rating Optimized"
               route={routeSuggestions.ratingOptimized}
-              icon={<Heart className="mr-2 h-4 w-4"/>}
+              icon={<Heart className="mr-2 h-4 w-4" />}
             />
           </div>
         </>
@@ -85,7 +92,15 @@ export default function Home() {
   );
 }
 
-function RouteCard({title, route, icon}: { title: string; route: RouteSuggestion; icon: React.ReactNode }) {
+function RouteCard({
+  title,
+  route,
+  icon,
+}: {
+  title: string;
+  route: RouteSuggestion;
+  icon: React.ReactNode;
+}) {
   return (
     <Card>
       <CardHeader className="flex flex-row items-center pb-2 space-y-0">
@@ -94,23 +109,29 @@ function RouteCard({title, route, icon}: { title: string; route: RouteSuggestion
       </CardHeader>
       <CardContent>
         <div className="mb-2">
-          <div className="flex items-center"><HomeIcon className="mr-2 h-4 w-4"/> Clinic: {route.clinic.name}</div>
+          <div className="flex items-center">
+            <HomeIcon className="mr-2 h-4 w-4" /> Clinic: {route.clinic.name}
+          </div>
           <div className="text-muted-foreground text-sm ml-6">{route.clinic.address}</div>
         </div>
         <div className="mb-2">
-          <div className="flex items-center"><Microscope className="mr-2 h-4 w-4"/> Lab: {route.lab.name}</div>
+          <div className="flex items-center">
+            <Microscope className="mr-2 h-4 w-4" /> Lab: {route.lab.name}
+          </div>
           <div className="text-muted-foreground text-sm ml-6">{route.lab.address}</div>
         </div>
-        <div>
-          <div className="flex items-center"><PharmacyIcon className="mr-2 h-4 w-4"/> Pharmacy: {route.pharmacy.name}</div>
+        <div className="mb-2">
+          <div className="flex items-center">
+            <PharmacyIcon className="mr-2 h-4 w-4" /> Pharmacy: {route.pharmacy.name}
+          </div>
           <div className="text-muted-foreground text-sm ml-6">{route.pharmacy.address}</div>
         </div>
+        <div className="pt-4 space-y-1 text-sm text-muted-foreground">
+          <div>Cost: ${route.costUSD}</div>
+          <div>Duration: {Math.round(route.durationSeconds / 60)} mins</div>
+          <div>Rating: {route.rating}</div>
+        </div>
       </CardContent>
-      <CardDescription className="p-4">
-        <div className="text-sm">Cost: ${route.costUSD}</div>
-        <div className="text-sm">Duration: {Math.round(route.durationSeconds / 60)} mins</div>
-        <div className="text-sm">Rating: {route.rating}</div>
-      </CardDescription>
     </Card>
   );
 }
