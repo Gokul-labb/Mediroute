@@ -34,6 +34,7 @@ export default function Home() {
   const [mcqs, setMcqs] = useState<MCQ[] | null>(null);
   const [mcqAnswers, setMcqAnswers] = useState<{[key: string]: string}>({});
   const [probableCause, setProbableCause] = useState<string | null>(null);
+  const [severityScore, setSeverityScore] = useState<number | null>(null);
   const [allMcqsAnswered, setAllMcqsAnswered] = useState(false);
 
   useEffect(() => {
@@ -54,6 +55,7 @@ export default function Home() {
       setMcqs(mcqsResult.mcqs);
       setRouteSuggestions(null); // Clear previous route suggestions
       setProbableCause(null); // Clear previous probable cause
+      setSeverityScore(null); // Clear previous severity score
 
     } catch (e: any) {
       console.error('Error getting route suggestions:', e);
@@ -75,6 +77,7 @@ export default function Home() {
           mcqAnswers: mcqAnswers,
         });
         setProbableCause(probableCauseResult.probableCause);
+        setSeverityScore(probableCauseResult.severityScore);
 
         // Get route suggestions
         const suggestions = await suggestRoutes({symptoms});
@@ -169,6 +172,9 @@ export default function Home() {
           </CardHeader>
           <CardContent>
             <p>{probableCause}</p>
+            {severityScore !== null && (
+              <p>Severity Score: {severityScore}</p>
+            )}
           </CardContent>
         </Card>
       )}
