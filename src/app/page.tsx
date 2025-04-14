@@ -12,7 +12,7 @@ import {
   Hourglass,
   Home as HomeIcon,
   Microscope,
-  Pharmacy as PharmacyIcon,
+  Pill as PharmacyIcon,
 } from 'lucide-react';
 
 export default function Home() {
@@ -54,7 +54,11 @@ export default function Home() {
             placeholder="e.g., headache, fever, cough"
             className="mb-2"
           />
-          <Button onClick={handleSuggestion} disabled={isLoading}>
+          <Button
+            onClick={handleSuggestion}
+            disabled={isLoading}
+            style={{ backgroundColor: symptoms ? '#1398ea' : '' }}
+          >
             {isLoading ? 'Suggesting...' : 'Get Route Suggestions'}
           </Button>
           {error && (
