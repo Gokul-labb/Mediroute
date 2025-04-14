@@ -155,7 +155,7 @@ function RouteCard({
         </div>
         <div className="pt-4 space-y-1 text-sm text-muted-foreground">
           <div>Cost: ${route.costUSD}</div>
-          <div>Duration: {Math.round(route.durationSeconds / 60)} mins</div>
+          <div>Waiting: {Math.round(route.durationSeconds / 60)} mins</div>
           <div>Rating: {route.rating}</div>
         </div>
       </CardContent>
