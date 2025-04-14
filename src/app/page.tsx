@@ -20,9 +20,15 @@ import {generateMCQs, MCQ} from '@/ai/flows/mcq-symptom';
 import {determineProbableCause, DetermineProbableCauseOutput} from '@/ai/flows/probable-cause';
 import {RadioGroup, RadioGroupItem} from '@/components/ui/radio-group';
 import {Label} from '@/components/ui/label';
+import {Input} from "@/components/ui/input";
 
 export default function Home() {
   const [symptoms, setSymptoms] = useState('');
+  const [location, setLocation] = useState('');
+  const [preference, setPreference] = useState('');
+  const [budget, setBudget] = useState('');
+  const [metric, setMetric] = useState('');
+
   const [routeSuggestions, setRouteSuggestions] = useState<null | {
     costOptimized: RouteSuggestion;
     speedOptimized: RouteSuggestion;
@@ -111,6 +117,46 @@ export default function Home() {
             suggestions.</CardDescription>
         </CardHeader>
         <CardContent>
+            <div className="mb-2">
+              <Label htmlFor="location">Your Location</Label>
+              <Input
+                id="location"
+                value={location}
+                onChange={(e) => setLocation(e.target.value)}
+                placeholder="Enter your city or address"
+                className="mb-2"
+              />
+            </div>
+             <div className="mb-2">
+              <Label htmlFor="preference">Visit Preference</Label>
+              <Input
+                id="preference"
+                value={preference}
+                onChange={(e) => setPreference(e.target.value)}
+                placeholder="e.g., Specific clinic type"
+                className="mb-2"
+              />
+            </div>
+             <div className="mb-2">
+              <Label htmlFor="budget">Your Budget</Label>
+              <Input
+                id="budget"
+                value={budget}
+                onChange={(e) => setBudget(e.target.value)}
+                placeholder="e.g., $50-$100"
+                className="mb-2"
+              />
+            </div>
+              <div className="mb-2">
+              <Label htmlFor="metric">Most Important Metric</Label>
+              <Input
+                id="metric"
+                value={metric}
+                onChange={(e) => setMetric(e.target.value)}
+                placeholder="Cost, Speed, or Rating"
+                className="mb-2"
+              />
+            </div>
           <Textarea
             value={symptoms}
             onChange={(e) => setSymptoms(e.target.value)}
