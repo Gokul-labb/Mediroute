@@ -6,7 +6,7 @@ import {Textarea} from '@/components/ui/textarea';
 import {Card, CardContent, CardDescription, CardHeader, CardTitle} from '@/components/ui/card';
 import {suggestRoutes, RouteSuggestion} from '@/ai/flows/suggest-routes';
 import {Alert, AlertDescription, AlertTitle} from '@/components/ui/alert';
-import {Compass, Heart, Hourglass, Home, Lab as LabIcon, PharmacyMedical as PharmacyIcon} from 'lucide-react';
+import {Compass, Heart, Hourglass, Home as HomeIcon, Microscope, PharmacyMedical as PharmacyIcon} from 'lucide-react';
 
 export default function Home() {
   const [symptoms, setSymptoms] = useState('');
@@ -94,11 +94,11 @@ function RouteCard({title, route, icon}: { title: string; route: RouteSuggestion
       </CardHeader>
       <CardContent>
         <div className="mb-2">
-          <div className="flex items-center"><Home className="mr-2 h-4 w-4"/> Clinic: {route.clinic.name}</div>
+          <div className="flex items-center"><HomeIcon className="mr-2 h-4 w-4"/> Clinic: {route.clinic.name}</div>
           <div className="text-muted-foreground text-sm ml-6">{route.clinic.address}</div>
         </div>
         <div className="mb-2">
-          <div className="flex items-center"><LabIcon className="mr-2 h-4 w-4"/> Lab: {route.lab.name}</div>
+          <div className="flex items-center"><Microscope className="mr-2 h-4 w-4"/> Lab: {route.lab.name}</div>
           <div className="text-muted-foreground text-sm ml-6">{route.lab.address}</div>
         </div>
         <div>
