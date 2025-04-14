@@ -19,7 +19,7 @@ import {
 import {generateMCQs, MCQ} from '@/ai/flows/mcq-symptom';
 import {determineProbableCause, DetermineProbableCauseOutput} from '@/ai/flows/probable-cause';
 import {RadioGroup, RadioGroupItem} from '@/components/ui/radio-group';
-import {Label} from '@/components/ui/label';
+import {Label} from "@/components/ui/label";
 import {Input} from "@/components/ui/input";
 import {Select, SelectContent, SelectItem, SelectTrigger, SelectValue} from "@/components/ui/select";
 
@@ -291,12 +291,13 @@ function RouteCard({
   let icon;
   let iconColorClass;
   let cardBorderClass = '';
+  let cardClass = '';
 
   switch (title) {
     case 'Cost Optimized':
       icon = <Wallet className="mr-2 h-4 w-4"/>;
-      iconColorClass = 'text-green-600';
-      cardBorderClass = 'border-green-200';
+      iconColorClass = 'text-white';
+      cardClass = 'bg-[#16A34A] text-white'; // Apply background color and text color
       break;
     case 'Speed Optimized':
       icon = <Clock className="mr-2 h-4 w-4"/>;
@@ -315,7 +316,7 @@ function RouteCard({
   }
 
   return (
-    <Card className={cardBorderClass}>
+    <Card className={`${cardBorderClass} ${cardClass}`}>
       <CardHeader className="flex flex-row items-center pb-2 space-y-0">
         <div className={iconColorClass}>{icon}</div>
         <CardTitle className="text-sm font-medium">{title}</CardTitle>
