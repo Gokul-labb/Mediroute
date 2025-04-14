@@ -21,13 +21,15 @@ import {determineProbableCause, DetermineProbableCauseOutput} from '@/ai/flows/p
 import {RadioGroup, RadioGroupItem} from '@/components/ui/radio-group';
 import {Label} from '@/components/ui/label';
 import {Input} from "@/components/ui/input";
+import {Select, SelectContent, SelectItem, SelectTrigger, SelectValue} from "@/components/ui/select";
 
 export default function Home() {
   const [symptoms, setSymptoms] = useState('');
   const [location, setLocation] = useState('');
-  const [preference, setPreference] = useState('');
+  const [visitPreference, setVisitPreference] = useState('');
   const [budget, setBudget] = useState('');
   const [metric, setMetric] = useState('');
+  const [showPreferenceFields, setShowPreferenceFields] = useState(false);
 
   const [routeSuggestions, setRouteSuggestions] = useState<null | {
     costOptimized: RouteSuggestion;
@@ -54,7 +56,7 @@ export default function Home() {
     }
   }, [mcqs, mcqAnswers]);
 
-  const handleSuggestion = async () => {
+  const handleSymptomSubmit = async () => {
     setIsLoading(true);
     setError(null);
     try {
@@ -64,10 +66,11 @@ export default function Home() {
       setRouteSuggestions(null); // Clear previous route suggestions
       setProbableCause(null); // Clear previous probable cause
       setSeverityScore(null); // Clear previous severity score
+      setShowPreferenceFields(true); // Show preference fields
 
     } catch (e: any) {
-      console.error('Error getting route suggestions:', e);
-      setError(e.message || 'Failed to get route suggestions');
+      console.error('Error generating MCQs:', e);
+      setError(e.message || 'Failed to generate MCQs');
     } finally {
       setIsLoading(false);
     }
@@ -117,6 +120,36 @@ export default function Home() {
             suggestions.</CardDescription>
         </CardHeader>
         <CardContent>
+          <Textarea
+            value={symptoms}
+            onChange={(e) => setSymptoms(e.target.value)}
+            placeholder="e.g., headache, fever, cough"
+            className="mb-2"
+          />
+          <Button
+            onClick={handleSymptomSubmit}
+            disabled={isLoading}
+            style={{backgroundColor: symptoms ? '#1398ea' : ''}}
+          >
+            {isLoading ? 'Suggest route' : 'Suggest route'}
+          </Button>
+          {error && (
+            <Alert variant="destructive" className="mt-4">
+              <AlertTitle>Error</AlertTitle>
+              <AlertDescription>{error}</AlertDescription>
+            </Alert>
+          )}
+        </CardContent>
+      </Card>
+
+      {showPreferenceFields && (
+        <Card className="mb-4">
+          <CardHeader>
+            <CardTitle>Your Preferences</CardTitle>
+            <CardDescription>Tell us more about what you're looking
+              for.</CardDescription>
+          </CardHeader>
+          <CardContent>
             <div className="mb-2">
               <Label htmlFor="location">Your Location</Label>
               <Input
@@ -127,17 +160,20 @@ export default function Home() {
                 className="mb-2"
               />
             </div>
-             <div className="mb-2">
-              <Label htmlFor="preference">Visit Preference</Label>
-              <Input
-                id="preference"
-                value={preference}
-                onChange={(e) => setPreference(e.target.value)}
-                placeholder="e.g., Specific clinic type"
-                className="mb-2"
-              />
+            <div className="mb-2">
+              <Label htmlFor="visitPreference">Visit Preference</Label>
+              <Select value={visitPreference} onValueChange={setVisitPreference}>
+                <SelectTrigger className="w-[180px]">
+                  <SelectValue placeholder="Select a preference"/>
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="clinic">Clinic</SelectItem>
+                  <SelectItem value="lab">Lab</SelectItem>
+                  <SelectItem value="pharmacy">Pharmacy</SelectItem>
+                </SelectContent>
+              </Select>
             </div>
-             <div className="mb-2">
+            <div className="mb-2">
               <Label htmlFor="budget">Your Budget</Label>
               <Input
                 id="budget"
@@ -147,37 +183,23 @@ export default function Home() {
                 className="mb-2"
               />
             </div>
-              <div className="mb-2">
+            <div className="mb-2">
               <Label htmlFor="metric">Most Important Metric</Label>
-              <Input
-                id="metric"
-                value={metric}
-                onChange={(e) => setMetric(e.target.value)}
-                placeholder="Cost, Speed, or Rating"
-                className="mb-2"
-              />
+              <Select value={metric} onValueChange={setMetric}>
+                <SelectTrigger className="w-[180px]">
+                  <SelectValue placeholder="Select a metric"/>
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="cost">Cost</SelectItem>
+                  <SelectItem value="speed">Speed</SelectItem>
+                  <SelectItem value="rating">Rating</SelectItem>
+                </SelectContent>
+              </Select>
             </div>
-          <Textarea
-            value={symptoms}
-            onChange={(e) => setSymptoms(e.target.value)}
-            placeholder="e.g., headache, fever, cough"
-            className="mb-2"
-          />
-          <Button
-            onClick={handleSuggestion}
-            disabled={isLoading}
-            style={{backgroundColor: symptoms ? '#1398ea' : ''}}
-          >
-            {isLoading ? 'Get Route Suggestions' : 'Get Route Suggestions'}
-          </Button>
-          {error && (
-            <Alert variant="destructive" className="mt-4">
-              <AlertTitle>Error</AlertTitle>
-              <AlertDescription>{error}</AlertDescription>
-            </Alert>
-          )}
-        </CardContent>
-      </Card>
+
+          </CardContent>
+        </Card>
+      )}
 
       {mcqs && (
         <Card className="mb-4">
@@ -229,7 +251,7 @@ export default function Home() {
             {severityZone !== null && (
               <p>Severity Zone: {severityZone}</p>
             )}
-             {predictedDisease !== null && (
+            {predictedDisease !== null && (
               <p>Predicted Disease: {predictedDisease}</p>
             )}
           </CardContent>
