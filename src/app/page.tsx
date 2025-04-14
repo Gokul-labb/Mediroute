@@ -137,7 +137,7 @@ export default function Home() {
                 </RadioGroup>
               </div>
             ))}
-            <Button onClick={handleSubmitMCQs} disabled={isLoading}>
+            <Button onClick={handleSubmitMCQs} disabled={isLoading} style={{backgroundColor: '#1398ea'}}>
               {isLoading ? 'Submitting...' : 'Submit Answers'}
             </Button>
           </CardContent>
@@ -245,3 +245,4 @@ function RouteCard({
     </Card>
   );
 }
+
